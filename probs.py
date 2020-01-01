@@ -1,5 +1,6 @@
 import itertools
 import pandas as pd
+import matplotlib.pyplot as plt
 
 data = pd.DataFrame()
 data['outcome'] = list(itertools.product(range(1, 7), range(1, 7), (0, 0, 0, 1, 2, 3)))
@@ -26,16 +27,17 @@ for s in range(2, 16):
 sums['<='] = sums['<'] + sums['=']
 sums['>='] = sums['>'] + sums['=']
 
-fstr = '{:.1f}%'.format
-misc_percents = (100*misc/len(data)).apply(fstr)
-sum_percents = (100*sums/len(data)).applymap(fstr)
+
+misc_percents = 100*misc/len(data)
+sum_percents = 100*sums/len(data)
 
 def t(raw=False):
+	fstr = '{:.1f}%'.format
 	if raw:
 		print(str(misc) + '\n')
 		print(sums)
-	print(str(misc_percents) + '\n')
-	print(sum_percents)
+	print(str(misc_percents.format(fstr)) + '\n')
+	print(sum_percents.format(fstr))
 
 def r(low, high=None, raw=False):
 	if not high:
@@ -45,3 +47,14 @@ def r(low, high=None, raw=False):
 	if raw:
 		print(num)
 	print(fstr(100*num / len(data)))
+
+def g(raw=False):
+	ax = None
+	if raw:
+		ax = sums['='].plot.bar()
+		ax.set_ylabel('Raw Count')
+	else:
+		ax = sum_percents['='].plot.bar()
+		ax.set_ylabel('Percent Chance')
+	ax.set_xlabel('Sum')
+	plt.show()
