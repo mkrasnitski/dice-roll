@@ -7,8 +7,8 @@ data['outcome'] = list(itertools.product(range(1, 7), range(1, 7), (0, 0, 0, 1, 
 triple = data['outcome'].apply(lambda s: s[0] == s[1] == s[2]).copy()
 
 sum_data = data[~triple].copy()
-double = sum_data['outcome'].apply(lambda s: s[0] == s[1])
 sum_data['sum'] = sum_data['outcome'].apply(sum)
+double = sum_data['outcome'].apply(lambda s: s[0] == s[1])
 
 misc = pd.Series(index=['odd', 'even', 'odd_doubles', 'even_doubles', 'triples'], dtype=int)
 odd = sum_data['sum'] % 2 == 1
@@ -18,28 +18,26 @@ misc['odd_doubles'] = len(sum_data[odd & double])
 misc['even_doubles'] = len(sum_data[~odd & double])
 misc['triples'] = len(data[triple])
 
-sum_counts = pd.DataFrame(index=range(2, 16), dtype='object', columns=('=', '<', '>', '<=', '>='))
-sum_counts['='] = sum_data['sum'].value_counts()
+sums = pd.DataFrame(index=range(2, 16), dtype='object', columns=('=', '<', '>', '<=', '>='))
+sums['='] = sum_data['sum'].value_counts()
 for s in range(2, 16):
-	sum_counts.loc[s, '<'] = len(sum_data[sum_data['sum'] < s])
-	sum_counts.loc[s, '>'] = len(sum_data[sum_data['sum'] > s])
-sum_counts['<='] = sum_counts['<'] + sum_counts['=']
-sum_counts['>='] = sum_counts['>'] + sum_counts['=']
-
-misc_percents = 100*misc/len(data)
-sum_percents = 100*sum_counts/len(data)
+	sums.loc[s, '<'] = len(sum_data[sum_data['sum'] < s])
+	sums.loc[s, '>'] = len(sum_data[sum_data['sum'] > s])
+sums['<='] = sums['<'] + sums['=']
+sums['>='] = sums['>'] + sums['=']
 
 fstr = '{:.1f}%'.format
+misc_percents = (100*misc/len(data)).apply(fstr)
+sum_percents = (100*sums/len(data)).applymap(fstr)
 
-def t(*, raw=False):
+def t(raw=False):
 	if raw:
-		print(misc.to_string())
-		print(sum_counts)
-	print(misc_percents.apply(fstr).to_string())
-	print()
-	print(sum_percents.applymap(fstr))
+		print(str(misc) + '\n')
+		print(sums)
+	print(str(misc_percents) + '\n')
+	print(sum_percents)
 
-def r(low, high=None, /, *, raw=False):
+def r(low, high=None, raw=False):
 	if not high:
 		high = low
 		low = 2
