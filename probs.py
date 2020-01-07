@@ -2,6 +2,7 @@ import re
 import itertools
 import pandas as pd
 import matplotlib.pyplot as plt
+from utils import Zero
 
 def t(raw=False):
 	if raw:
@@ -32,7 +33,8 @@ def g(raw=False):
 	plt.show()
 
 data = pd.DataFrame()
-data['outcome'] = list(itertools.product(range(1, 7), range(1, 7), (0, 0, 0, 1, 2, 3)))
+strange_dice = (Zero('Bus'), Zero('Monopoly Man'), Zero('Monopoly Man'), 1, 2, 3)
+data['outcome'] = list(itertools.product(range(1, 7), range(1, 7), strange_dice))
 
 triple = data['outcome'].apply(lambda s: s[0] == s[1] == s[2]).copy()
 
