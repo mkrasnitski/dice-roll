@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class Zero:
+class SpecialZero:
 	name: str
 
 	def __add__(self, other):
