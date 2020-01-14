@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 import re
 import itertools
 import pandas as pd
@@ -7,13 +8,13 @@ from utils import SpecialZero
 def t():
 	print('Misc: \n' + misc_percents.apply(fstr).to_string() + '\n')
 	print('Sums: \n' + sum_percents.apply(fstr).to_string() + '\n')
-	print('Special (% prob given sum occured): \n' + special_percents.applymap(fstr).to_string())
+	print('Special (% chance given a sum is rolled): \n' + special_percents.applymap(fstr).to_string())
 
 def r(low, high, raw=False):
 	if low is None:
 		low = 2
 	num = len(sum_data[(low <= sum_data['sum']) & (sum_data['sum'] < high)])
-	print(fstr(100*num / len(data)))
+	print(f'% {low} <= roll < {high}:', fstr(100*num / len(data)))
 
 def g(raw=False):
 	ax = sum_percents.plot.bar()
